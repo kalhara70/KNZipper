@@ -1,7 +1,7 @@
 const webApps = [
             { name: 'QR Code Generator', description: 'With our QR code generator, you can convert any URL or TEXT into a qr code. You can use it anywhere.', link: 'qr_code_gen.html' , category: 'Generator' },
             { name: 'Passport Photo Croper', description: 'You can crop any of your photos to passport size from this webapp.', link: 'passport_zise_photo_crop.html', category: 'Editions' },
-            { name: 'Temp Video Player', description: 'Take control of your finances with our smart budget planning and expense tracking tools.', link: 'temp_video_player.html', category: 'Media_Tools' },
+            { name: 'Temp Video Player', description: 'You can play your videos manually through this webapp.', link: 'temp_video_player.html', category: 'Media_Tools' },
             { name: 'Code Editor', description: 'Write, edit, and debug code efficiently with our powerful online development environment.', link: 'https://example.com/code-editor', category: 'development' },
             { name: 'Investment Tracker', description: 'Monitor your investments and make informed decisions with real-time market insights.', link: 'https://example.com/investment-tracker', category: 'finance' }
         ];
