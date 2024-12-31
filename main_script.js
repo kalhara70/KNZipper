@@ -35,7 +35,7 @@
        const webApps = [
             { name: 'QR Code Generator', description: 'With our QR code generator, you can convert any URL or TEXT into a qr code. You can use it anywhere.', link: 'qr_code_gen.html', category: 'Generator' },
             { name: 'Passport Photo Crop', description: 'You can crop any of your photos to passport size from this webapp.', link: 'passport_zise_photo_crop.html', category: 'Edition' },
-            { name: 'Temp Video Player', description: 'You can play your videos manually through this webapp.', link: 'temp_video_player.html', category: 'Media_Tools' }
+            { name: 'Temp Video Player', description: 'You can play your videos temporary through this webapp. ', link: 'temp_video_player.html', category: 'Media_Tools' }
         ];
 
         const appList = document.getElementById('appList');
