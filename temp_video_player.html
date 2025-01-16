@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Player</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+      color: #ffffff;
+      min-height: 100vh;
+    }
+
+    /* Navigation Styles */
+    .navbar {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      backdrop-filter: blur(10px);
+      padding: 1rem 2rem;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-content {
+      max-width: 1200px;
+          margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+      font-size: 0.95rem;
+    }
+
+    .nav-links a:hover {
+      color: #3498db;
+    }
+
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+    }
+
+    .menu-toggle span {
+      width: 25px;
+      height: 2px;
+      background-color: #fff;
+      transition: all 0.3s ease;
+    }
+
+    /* Main Content Styles */
+    .main-content {
+      padding-top: 100px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 2rem;
+    }
+
+    .video-container {
+      width: 90%;
+      max-width: 1000px;
+      background-color: rgba(30, 30, 30, 0.8);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+      transition: transform 0.3s ease;
+    }
+
+    .video-container:hover {
+      transform: translateY(-5px);
+    }
+
+    #videoPlayer {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background-color: #000;
+    }
+
+    .file-upload-container {
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 90%;
+      max-width: 1000px;
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    .file-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #ffffff;
+      padding: 14px 28px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      gap: 12px;
+      font-weight: 500;
+      box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+    }
+
+    .file-label:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+    }
+
+    .file-label i {
+      font-size: 20px;
+    }
+
+    .file-name {
+      margin-top: 15px;
+      color: #a0a0a0;
+      max-width: 300px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: center;
+      padding: 8px 16px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+
+    /* Mobile Responsive Styles */
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: flex;
+      }
+
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(30, 30, 30, 0.95);
+        padding: 1rem;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        height :900px;
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+
+      .video-container {
+        width: 95%;
+      }
+
+      .file-upload-container {
+        width: 95%;
+      }
+    }
+    .typing {
+  /*border-right: .15em solid black; */
+  white-space: normal ;
+  overflow: hidden; 
+  width: 8ch;
+  animation: typing 1.5s steps(40, end), blink-caret .5s step-end infinite;
+}
+
+@keyframes typing {
+  from { width: 0; }
+  to { width: 8ch; }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent; }
+  50% { border-color: black; }
+}
+
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-content">
+      <a href="index.html" class="logo"><p class="typing">KNZipper</p></a>
+      <div class="menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+            <a href="#">About</a>
+            <a href="Library.html">Library</a>
+            <a href="#">Portfolio</a>
+            <a href="#">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="main-content">
+    <div class="video-container">
+      <video id="videoPlayer" controls>
+        <p>Your browser does not support the video tag.</p>
+      </video>
+    </div>
+    
+    <div class="file-upload-container">
+      <input type="file" id="videoInput" class="file-input" accept="video/*">
+      <label for="videoInput" class="file-label">
+        <i class="fas fa-upload"></i>
+        Choose Video File
+      </label>
+      <div id="fileName" class="file-name"></div>
+    </div>
+  </div>
+
+  <script>
+    // Mobile menu toggle
+    document.querySelector('.menu-toggle').addEventListener('click', () => {
+      document.querySelector('.nav-links').classList.toggle('active');
+    });
+
+    // Video player functionality
+    const videoInput = document.getElementById('videoInput');
+    const videoPlayer = document.getElementById('videoPlayer');
+    const fileNameDisplay = document.getElementById('fileName');
+
+    videoInput.addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const videoURL = URL.createObjectURL(file);
+        videoPlayer.src = videoURL;
+        fileNameDisplay.textContent = file.name;
+      }
+    });
+  </script>
+</body>
+</html>
