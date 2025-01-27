@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Home Page</title>
+    <link rel="stylesheet" type="text/css" href="main_style.css">
+   <style>
+.typing {
+  /*border-right: .15em solid black; */
+  white-space: normal ;
+  overflow: hidden; 
+  width: 8ch;
+  animation: typing 1.5s steps(40, end), blink-caret .5s step-end infinite;
+}
+
+@keyframes typing {
+  from { width: 0; }
+  to { width: 8ch; }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent; }
+  50% { border-color: black; }
+}
+</style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="logo"><ul class="typing">KNZipper</ul></a>
+        <div class="menu-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="#">About</a>
+            <a href="Library.html">Library</a>
+            <a href="#">Portfolio</a>
+            <a href="#">Contact</a>
+        </div>
+    </nav>
+ 
+    <div class="story-modal">
+        <div class="story-modal-content">
+            <span class="close-modal">&times;</span>
+            <img src="" alt="Story Full View" class="story-modal-image">
+        </div>
+    </div>
+
+
+    <div class="main-content">
+        <h1>Welcome to Our Website</h1>
+        <p class="p">Your one-stop solution for amazing web design!</p>
+        <button class="btn">Learn More</button>
+    </div>
+    
+
+    <section class="stories-section">
+        <h2 class="stories-title"><ul class="typing">States</ul></h2>
+        <div class="stories-container">
+            <div class="story-item">
+                <img src="main_images/s1.jpg" alt="Story 1" class="story-image">
+                <div class="story-overlay">
+                    <h3 class="story-title">Travel Adventure</h3>
+                    <span class="story-time">2 hours ago</span>
+                </div>
+            </div>
+            <div class="story-item">
+                <img src="main_images/s2.jpg" alt="Story 2" class="story-image">
+                <div class="story-overlay">
+                    <h3 class="story-title">Food & Culture</h3>
+                    <span class="story-time">5 hours ago</span>
+                </div>
+            </div>
+            <div class="story-item">
+                <img src="main_images/s3.jpg" alt="Story 3" class="story-image">
+                <div class="story-overlay">
+                    <h3 class="story-title">City Life</h3>
+                    <span class="story-time">8 hours ago</span>
+                </div>
+            </div>
+            <div class="story-item">
+                <img src="main_images/s4.jpg" alt="Story 4" class="story-image">
+                <div class="story-overlay">
+                    <h3 class="story-title">Nature</h3>
+                    <span class="story-time">1 day ago</span>
+                </div>
+            </div>
+            <div class="story-item">
+                <img src="/api/placeholder/150/250" alt="Story 5" class="story-image">
+                <div class="story-overlay">
+                    <h3 class="story-title">Technology</h3>
+                    <span class="story-time">2 days ago</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    
+    
+    <div class="container">
+        <h2 class="stories-title"><ul class="typing">Webapps </ul></h2>
+        <div class="filter-bar">
+            <select id="categoryFilter">
+                <option value="all">All Categories</option>
+                <option value="productivity">Productivity</option>
+                <option value="finance">Finance</option>
+                <option value="development">Development</option>
+                <option value="Media_Tools">Media Tools</option>
+            </select></br>
+            <input type="text" id="searchInput" placeholder="Search apps...">
+        </div>
+
+        <div class="app-list" id="appList"></div>
+        
+        
+           <center><a href="Library.html"><button class="smbtn">See More</button></a></center>
+        
+        </div>
+        
+       
+    <footer>© 2024 Your Website Name. All Rights Reserved.</footer>
+
+ <script src="main_script.js"></script>
+ 
+   </body>
+</html>

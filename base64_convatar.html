@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Player</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <style>
+       :root {
+            --primary-color: #6366f1;
+            --primary-hover: #4f46e5;
+            --success-color: #22c55e;
+            --success-hover: #16a34a;
+            --background: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+        }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text-primary);
+            line-height: 1.5;
+            min-height: 100vh;
+            
+        }
+
+    /* Navigation Styles */
+    .navbar {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      backdrop-filter: blur(10px);
+      padding: 1rem 2rem;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-content {
+      max-width: 1200px;
+          margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+      font-size: 0.95rem;
+    }
+
+    .nav-links a:hover {
+      color: #3498db;
+    }
+
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+    }
+
+    .menu-toggle span {
+      width: 25px;
+      height: 2px;
+      background-color: #fff;
+      transition: all 0.3s ease;
+    }
+    .typing {
+  /*border-right: .15em solid black; */
+  white-space: normal ;
+  overflow: hidden; 
+  width: 8ch;
+  animation: typing 1.5s steps(40, end), blink-caret .5s step-end infinite;
+}
+
+@keyframes typing {
+  from { width: 0; }
+  to { width: 8ch; }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent; }
+  50% { border-color: black; }
+}
+
+    /* Main Content Styles */
+     .main-content {
+            padding-top: 80px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-bottom: 20px;
+        }
+    .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: var(--card-bg);
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .file-input-container {
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .file-input-label {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: var(--background);
+            border: 2px dashed var(--border-color);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            width: 100%;
+            text-align: center;
+        }
+
+        .file-input-label:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        /* File Details Styles */
+        .file-details {
+            background: var(--background);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            display: none;
+        }
+
+        .file-details.show {
+            display: block;
+        }
+
+        .file-preview {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .file-preview img {
+            max-width: 300px;
+            max-height: 200px;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .file-info {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .file-info dt {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .file-info dd {
+            color: var(--text-primary);
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            margin: 1rem 0;
+            resize: vertical;
+            padding: 1rem;
+            font-size: 0.875rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            background: var(--background);
+            color: var(--text-primary);
+            font-family: monospace;
+            transition: border-color 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .split-controls {
+            display: flex;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            align-items: center;
+        }
+
+        select {
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            cursor: pointer;
+        }
+
+        button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: white;
+            background: var(--primary-color);
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            gap: 0.5rem;
+        }
+
+        button:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .copy-button {
+            background: var(--success-color);
+            margin-top: 0.5rem;
+        }
+
+        .copy-button:hover {
+            background: var(--success-hover);
+        }
+
+    /* Mobile Responsive Styles */
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: flex;
+      }
+
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(30, 30, 30, 0.95);
+        padding: 1rem;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        height :900px;
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+
+      body {
+                padding: rem;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+
+            .container {
+                padding: 1rem;
+                
+                margin-top:70px;
+            }
+
+            .split-controls {
+                flex-direction: column;
+            }
+
+            select {
+                width: 100%;
+            }
+
+            .file-info {
+                grid-template-columns: 1fr;
+            }
+      
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-content">
+      <a href="index.html" class="logo"><p class="typing">KNZipper</p></a>
+      <div class="menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+            <a href="#">About</a>
+            <a href="Library.html">Library</a>
+            <a href="#">Portfolio</a>
+            <a href="#">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+    <div class="main-content">
+  <div class="container">
+        <h1>Base64 Converter & Splitter</h1>
+        
+        <div class="file-input-container">
+            <label for="fileInput" class="file-input-label">
+                Click to select a file or drag and drop here
+            </label>
+            <input type="file" id="fileInput" accept="image/*,video/*,audio/*">
+        </div>
+
+        <div id="fileDetails" class="file-details">
+            <div class="file-preview">
+                <!-- Preview image will be inserted here -->
+            </div>
+            <dl class="file-info">
+                <dt>File Name:</dt>
+                <dd id="fileName">-</dd>
+                
+                <dt>File Type:</dt>
+                <dd id="fileType">-</dd>
+                
+                <dt>File Size:</dt>
+                <dd id="fileSize">-</dd>
+                
+                <dt>Last Modified:</dt>
+                <dd id="lastModified">-</dd>
+            </dl>
+        </div>
+
+        <button id="convertButton">Convert to Base64</button>
+        
+        <div id="outputSection" style="display: none;">
+            <h2>Base64 String</h2>
+            <textarea id="base64Output" readonly></textarea>
+
+            <h2>Split & Copy</h2>
+            <div class="split-controls">
+                <label for="splitOption">Number of Parts:</label>
+                <select id="splitOption">
+                    <option value="2">2 Parts</option>
+                    <option value="3">3 Parts</option>
+                    <option value="4">4 Parts</option>
+                    <option value="6">6 Parts</option>
+                    <option value="8">8 Parts</option>
+                </select>
+                <button id="splitButton">Split Base64 String</button>
+            </div>
+
+            <div id="splitResults"></div>
+        </div>
+    </div>
+    </div>
+
+  <script>
+    // Mobile menu toggle
+    document.querySelector('.menu-toggle').addEventListener('click', () => {
+      document.querySelector('.nav-links').classList.toggle('active');
+    });
+
+      
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function formatDate(date) {
+            return new Date(date).toLocaleString();
+        }
+
+        function updateFileDetails(file) {
+            const fileDetails = document.getElementById('fileDetails');
+            const preview = fileDetails.querySelector('.file-preview');
+            
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileType').textContent = file.type || 'Unknown';
+            document.getElementById('fileSize').textContent = formatFileSize(file.size);
+            document.getElementById('lastModified').textContent = formatDate(file.lastModified);
+
+            // Clear previous preview
+            preview.innerHTML = '';
+
+            // Show preview for images
+            if (file.type.startsWith('image/')) {
+                const img = document.createElement('img');
+                img.alt = file.name;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+                preview.appendChild(img);
+            } else {
+                preview.innerHTML = '<p>No preview available</p>';
+            }
+
+            fileDetails.classList.add('show');
+        }
+
+        const fileInput = document.getElementById('fileInput');
+        const fileLabel = document.querySelector('.file-input-label');
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                updateFileDetails(e.target.files[0]);
+            }
+        });
+
+        fileLabel.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileLabel.style.borderColor = 'var(--primary-color)';
+        });
+
+        fileLabel.addEventListener('dragleave', () => {
+            fileLabel.style.borderColor = 'var(--border-color)';
+        });
+
+        fileLabel.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileInput.files = e.dataTransfer.files;
+            if (e.dataTransfer.files.length > 0) {
+                updateFileDetails(e.dataTransfer.files[0]);
+            }
+            fileLabel.style.borderColor = 'var(--border-color)';
+        });
+
+        document.getElementById('convertButton').addEventListener('click', () => {
+            const outputSection = document.getElementById('outputSection');
+            const base64Output = document.getElementById('base64Output');
+
+            if (fileInput.files.length === 0) {
+                alert('Please select a file!');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = () => {
+                const base64String = reader.result.split(',')[1];
+                base64Output.value = base64String;
+                outputSection.style.display = 'block';
+            };
+
+            reader.readAsDataURL(file);
+        });
+
+        document.getElementById('splitButton').addEventListener('click', () => {
+            const base64String = document.getElementById('base64Output').value;
+            const numParts = parseInt(document.getElementById('splitOption').value, 10);
+            const splitResults = document.getElementById('splitResults');
+
+            if (!base64String) {
+                alert('Please generate the Base64 string first!');
+                return;
+            }
+
+            const partLength = Math.ceil(base64String.length / numParts);
+            splitResults.innerHTML = '';
+
+            for (let i = 0; i < numParts; i++) {
+                const part = base64String.slice(i * partLength, (i + 1) * partLength);
+                
+                const partContainer = document.createElement('div');
+                partContainer.className = 'part-container';
+                
+                const partHeader = document.createElement('div');
+                partHeader.className = 'part-header';
+                partHeader.innerHTML = `<span>Part ${i + 1}</span>`;
+                
+                const textArea = document.createElement('textarea');
+                textArea.value = part;
+                textArea.readOnly = true;
+                
+                const copyButton = document.createElement('button');
+                copyButton.textContent = `Copy Part ${i + 1}`;
+                copyButton.className = 'copy-button';
+                copyButton.addEventListener('click', () => {
+                    navigator.clipboard.writeText(part);
+                    copyButton.textContent = 'Copied!';
+                    setTimeout(() => {
+                        copyButton.textContent = `Copy Part ${i + 1}`;
+                    }, 2000);
+                });
+
+                partContainer.appendChild(partHeader);
+                partContainer.appendChild(textArea);
+                partContainer.appendChild(copyButton);
+                splitResults.appendChild(partContainer);
+            }
+        
+        
+        
+    });
+    </script>
+</body>
+</html>

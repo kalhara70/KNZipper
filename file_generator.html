@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Generator</title>
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text-color);
+            line-height: 1.5;
+        }
+        /* New Navigation Styles */
+        .navbar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: opacity 0.3s ease;
+            
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+            
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            
+        }
+
+        .menu-toggle span {
+            width: 25px;
+            height: 2px;
+            background-color: white;
+            transition: all 0.3s ease;
+        }
+        .typing {
+  /*border-right: .15em solid black; */
+  white-space: normal ;
+  overflow: hidden; 
+  width: 8ch;
+  animation: typing 1.5s steps(40, end), blink-caret .5s step-end infinite;
+}
+
+@keyframes typing {
+  from { width: 0; }
+  to { width: 8ch; }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent; }
+  50% { border-color: black; }
+}
+
+        /* Modified container style to account for navbar */
+        .main-content {
+            padding-top: 0px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-bottom: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 32px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--text-color);
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background-color: white;
+            color: var(--text-color);
+            transition: all 0.2s;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23222222%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 0.65rem auto;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            color: white;
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+        
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+        .menu-toggle {
+                display: flex;
+            }
+
+            .nav-links {
+                height : 1000px;
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(30,30, 30, 0.95);
+                backdrop-filter: blur(10px);
+                padding: 1rem;
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .navbar {
+                padding: 1rem;
+            }
+        }
+        
+    </style>
+</head>
+<body>
+     <nav class="navbar">
+       <a href="index.html" class="logo"><p class="typing">KNZipper</p></a>
+        <div class="menu-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="#">About</a>
+            <a href="Library.html">Library</a>
+            <a href="#">Portfolio</a>
+            <a href="#">Contact</a>
+        </div>
+    </nav>
+    <div class="main-content">
+    <div class="container">
+        <h1>Code File Generator</h1>
+        <label for="language">Choose a Programming Language:</label>
+        <select id="language">
+            <option value="html">HTML</option>
+            <option value="css">CSS</option>
+            <option value="js">JavaScript</option>
+            <option value="java">Java</option>
+            <option value="python">Python</option>
+            <option value="cpp">C++</option>
+            <option value="csharp">C#</option>
+            <option value="php">PHP</option>
+            <option value="ruby">Ruby</option>
+            <option value="swift">Swift</option>
+            <option value="kotlin">Kotlin</option>
+            <option value="go">Go</option>
+            <option value="rust">Rust</option>
+            <option value="typescript">TypeScript</option>
+            <option value="sql">SQL</option>
+        </select>
+        <button id="generateButton">Download Code File</button>
+    </div></div>
+
+    <script>
+        const codeTemplates = {
+            html: `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Hello, HTML!</h1>
+</body>
+</html>`,
+            css: `/* Main Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    color: #2c3e50;
+    text-align: center;
+}`,
+            js: `// Main JavaScript file
+function greet(name) {
+    return "Hello, " + name + "!";
+}
+
+console.log(greet("World"));`,
+            java: `public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello, Java!");
+        
+        // Example class implementation
+        Person person = new Person("John", 25);
+        person.greet();
+    }
+}
+
+class Person {
+    private String name;
+    private int age;
+    
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+    
+    public void greet() {
+        System.out.println("Hello, my name is " + name);
+    }
+}`,
+            python: `# Main Python file
+def greet(name):
+    return f"Hello, {name}!"
+
+class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+    
+    def greet(self):
+        print(f"Hello, my name is {self.name}")
+
+if __name__ == "__main__":
+    print(greet("World"))
+    person = Person("John", 25)
+    person.greet()`,
+            cpp: `#include <iostream>
+#include <string>
+
+class Person {
+private:
+    std::string name;
+    int age;
+
+public:
+    Person(std::string name, int age) : name(name), age(age) {}
+    
+    void greet() {
+        std::cout << "Hello, my name is " << name << std::endl;
+    }
+};
+
+int main() {
+    std::cout << "Hello, C++!" << std::endl;
+    
+    Person person("John", 25);
+    person.greet();
+    
+    return 0;
+}`,
+            csharp: `using System;
+
+namespace HelloWorld
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Hello, C#!");
+            
+            var person = new Person("John", 25);
+            person.Greet();
+        }
+    }
+
+    class Person
+    {
+        public string Name { get; set; }
+        public int Age { get; set; }
+
+        public Person(string name, int age)
+        {
+            Name = name;
+            Age = age;
+        }
+
+        public void Greet()
+        {
+            Console.WriteLine($"Hello, my name is {Name}");
+        }
+    }
+}`,
+            php: `<?php
+class Person {
+    private $name;
+    private $age;
+    
+    public function __construct($name, $age) {
+        $this->name = $name;
+        $this->age = $age;
+    }
+    
+    public function greet() {
+        echo "Hello, my name is " . $this->name;
+    }
+}
+
+echo "Hello, PHP!\\n";
+
+$person = new Person("John", 25);
+$person->greet();`,
+            ruby: `# Main Ruby file
+class Person
+  def initialize(name, age)
+    @name = name
+    @age = age
+  end
+  
+  def greet
+    puts "Hello, my name is #{@name}"
+  end
+end
+
+puts "Hello, Ruby!"
+
+person = Person.new("John", 25)
+person.greet`,
+            swift: `import Foundation
+
+class Person {
+    var name: String
+    var age: Int
+    
+    init(name: String, age: Int) {
+        self.name = name
+        self.age = age
+    }
+    
+    func greet() {
+        print("Hello, my name is \\(name)")
+    }
+}
+
+print("Hello, Swift!")
+
+let person = Person(name: "John", age: 25)
+person.greet()`,
+            kotlin: `class Person(private val name: String, private val age: Int) {
+    fun greet() {
+        println("Hello, my name is $name")
+    }
+}
+
+fun main() {
+    println("Hello, Kotlin!")
+    
+    val person = Person("John", 25)
+    person.greet()
+}`,
+            go: `package main
+
+import "fmt"
+
+type Person struct {
+    name string
+    age  int
+}
+
+func (p Person) greet() {
+    fmt.Printf("Hello, my name is %s\\n", p.name)
+}
+
+func main() {
+    fmt.Println("Hello, Go!")
+    
+    person := Person{name: "John", age: 25}
+    person.greet()
+}`,
+            rust: `struct Person {
+    name: String,
+    age: u32,
+}
+
+impl Person {
+    fn new(name: &str, age: u32) -> Person {
+        Person {
+            name: String::from(name),
+            age,
+        }
+    }
+    
+    fn greet(&self) {
+        println!("Hello, my name is {}", self.name);
+    }
+}
+
+fn main() {
+    println!("Hello, Rust!");
+    
+    let person = Person::new("John", 25);
+    person.greet();
+}`,
+            typescript: `interface PersonInterface {
+    name: string;
+    age: number;
+    greet(): void;
+}
+
+class Person implements PersonInterface {
+    constructor(public name: string, public age: number) {}
+    
+    greet(): void {
+        console.log(\`Hello, my name is ${this.name}\`);
+    }
+}
+
+console.log("Hello, TypeScript!");
+
+const person: PersonInterface = new Person("John", 25);
+person.greet();`,
+            sql: `-- Create a simple database schema
+CREATE TABLE IF NOT EXISTS persons (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(100) NOT NULL,
+    age INTEGER NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Insert sample data
+INSERT INTO persons (name, age) VALUES
+    ('John Doe', 25),
+    ('Jane Smith', 30);
+
+-- Select all persons
+SELECT * FROM persons;`
+        };
+
+        document.getElementById('generateButton').addEventListener('click', () => {
+            const language = document.getElementById('language').value;
+            const code = codeTemplates[language];
+            const fileName = {
+                html: 'index.html',
+                css: 'style.css',
+                js: 'script.js',
+                java: 'Main.java',
+                python: 'main.py',
+                cpp: 'main.cpp',
+                csharp: 'Program.cs',
+                php: 'index.php',
+                ruby: 'main.rb',
+                swift: 'main.swift',
+                kotlin: 'Main.kt',
+                go: 'main.go',
+                rust: 'main.rs',
+                typescript: 'main.ts',
+                sql: 'schema.sql'
+            }[language];
+
+            const blob = new Blob([code], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = fileName;
+            link.click();
+        });
+        // New navigation menu toggle function
+        document.querySelector('.menu-toggle').addEventListener('click', () => {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+    </script>
+</body>
+</html>
