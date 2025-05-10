@@ -28,9 +28,9 @@
         });
 
         // Button Click Event
-        document.querySelector('.btn').addEventListener('click', () => {
+      /*  document.querySelector('.btn').addEventListener('click', () => {
             alert('Thanks for clicking! Explore more features soon.');
-        });
+        });*/
        
        const webApps = [
             { name: 'QR Code Generator', description: 'Streamline your workflow and manage projects effectively with our intuitive project management solution.', link: 'qr_code_gen.html', category: 'Generator' },
