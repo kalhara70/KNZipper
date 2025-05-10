@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Chat App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+         /* New Navigation Styles */
+         .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            animation: slideDown 1s ease-out;
+            z-index: 1000;
+            
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: opacity 0.3s ease;
+            
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+            
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            
+        }
+
+        .menu-toggle span {
+            width: 25px;
+            height: 2px;
+            background-color: white;
+            transition: all 0.3s ease;
+        }
+
+        .chat-container {
+            background: rgba(255, 255, 255, 0.95);
+            width: 100%;
+            max-width: 450px;
+            height: 600px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1;
+        }
+
+        .chat-header .avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .chat-header .info h2 {
+            font-size: 1rem;
+            color: #1a1a1a;
+        }
+
+        .chat-header .info p {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        #chat-box {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        #chat-box::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #chat-box::-webkit-scrollbar-thumb {
+            background: #ddd;
+            border-radius: 3px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.sent {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.received {
+            background: white;
+            color: #1a1a1a;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 3px;
+            text-align: right;
+        }
+
+        .message.received .message-time {
+            color: #666;
+        }
+
+        .chat-input {
+            padding: 20px;
+            background: white;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        form {
+            display: flex;
+            gap: 10px;
+        }
+
+        #msgTxt {
+            flex: 1;
+            padding: 12px 20px;
+            border: 1px solid #eee;
+            border-radius: 25px;
+            outline: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        #message-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
+        }
+
+        button svg {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .typing-indicator {
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: #666;
+            align-self: flex-start;
+            display: none;
+        }
+
+        .typing-indicator.active {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 3px;
+        }
+
+        .dot {
+            width: 4px;
+            height: 4px;
+            background: #666;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite;
+        }
+
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+
+        @media (max-width: 480px) {
+            .chat-container {
+                height: 100vh;
+                border-radius: 0;
+            }
+            
+            body {
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="logo"><p class="typing">KNZipper</p></a>
+        <div class="menu-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="#">About</a>
+            <a href="Library.html">Library</a>
+            <a href="#">Portfolio</a>
+            <a href="#">Contact</a>
+        </div>
+    </nav>
+    <div class="chat-container">
+        <div class="chat-header">
+            <div class="avatar">KN</div>
+            <div class="info">
+                <h2>KNZipper Chat Room</h2>
+                <p>Group chat 🥰</p>
+            </div>
+        </div>
+        
+        <div id="chat-box">
+            <div class="message received">
+            
+              WELCOME TO KNZipper CHAT APP ❕
+                
+            </div>
+            <div class="typing-indicator">
+                <span>Someone is typing</span>
+                <div class="typing-dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-input">
+            <form id="chat-form">
+                <input 
+                    id="msgTxt" 
+                    type="text" 
+                    placeholder="Type your message..." 
+                    autocomplete="off"
+                >
+                <button type="submit">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M22 2L11 13M22 2L15 22L11 13M11 13L2 9"/>
+                    </svg>
+                </button>
+            </form>
+        </div>
+    </div>
+<script>
+    module = {};
+</script>
+<script type="module">
+
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+  import { getDatabase, ref, set, onChildAdded } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-analytics.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCIC0_15xZGLYIFN3o7v1V2lzvt8asqtD0",
+    authDomain: "knzipperchatapp.firebaseapp.com",
+    databaseURL: "https://knzipperchatapp-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "knzipperchatapp",
+    storageBucket: "knzipperchatapp.firebasestorage.app",
+    messagingSenderId: "454745446733",
+    appId: "1:454745446733:web:adc1db43200a3c24f77f04",
+    measurementId: "G-TKQGN5VY63"
+  };
+
+  
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const analytics = getAnalytics(app);
+  
+
+  // Variables
+  const msgTxt = document.getElementById('msgTxt');
+  const chatBox = document.getElementById('chat-box');
+  var sender;
+
+  // Set sender from session or ask for it
+  if(sessionStorage.getItem('sender')){
+    sender = sessionStorage.getItem('sender');
+  } else {
+    sender = prompt('PLEASE ENTER YOUR NAME');
+    sessionStorage.setItem('sender', sender);
+  }
+
+  // Send message
+  module.sendMsg = function() {
+    const msg = msgTxt.value;
+    const timestamp = new Date().getTime();
+    set(ref(db, "messages/" + timestamp), {
+      msg: msg,
+      sender: sender
+    });
+  };
+
+  // Listen for form submission
+  document.getElementById('chat-form').addEventListener('submit', function(e) {
+    e.preventDefault(); 
+    module.sendMsg();
+    msgTxt.value = ''; 
+  });
+
+  // Display new messages
+  onChildAdded(ref(db, 'messages'), (snapshot) => {
+    const message = snapshot.val();
+    const messageElement = document.createElement('div');
+    messageElement.className = message.sender === sender ? 'message sent' : 'message received';
+    messageElement.innerHTML = `
+      ${message.msg}
+      <div class="message-time">${new Date(parseInt(snapshot.key)).toLocaleTimeString()}</div>
+    `;
+    chatBox.appendChild(messageElement);
+    chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll to the bottom
+  });
+</script>
+</body>
+</html>
