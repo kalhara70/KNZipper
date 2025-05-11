@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Image ↔ PDF Converter</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      text-align: center;
+      padding: 20px;
+      margin: 0;
+      color: #333;
+      min-height: 100vh;
+    }
+    .navbar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: opacity 0.3s ease;
+            
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+            
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            
+        }
+
+        .menu-toggle span {
+            width: 25px;
+            height: 2px;
+            background-color: white;
+            transition: all 0.3s ease;
+        }
+        .typing {
+  /*border-right: .15em solid black; */
+  white-space: normal ;
+  overflow: hidden; 
+  width: 8ch;
+  animation: typing 1.5s steps(40, end), blink-caret .5s step-end infinite;
+}
+
+@keyframes typing {
+  from { width: 0; }
+  to { width: 8ch; }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent; }
+  50% { border-color: black; }
+}
+    .container {
+      max-width: 850px;
+      margin: 0 auto;
+      margin-top:90px;
+    }
+    .box {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 25px;
+      margin: 25px auto;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      max-width: 650px;
+      transition: transform 0.3s ease;
+    }
+    .box:hover {
+      transform: translateY(-5px);
+    }
+    .inactive-box {
+      opacity: 0.6;
+      transform: scale(0.95);
+    }
+    h1 {
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+    }
+    h2 {
+      color: #5a4a9c;
+      margin-top: 0;
+      font-weight: 600;
+      border-bottom: 2px solid #764ba2;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+    .input-group {
+      margin: 20px 0;
+    }
+    input[type="file"] {
+      display: none;
+    }
+    .file-label {
+      display: inline-block;
+      padding: 12px 20px;
+      background: #5a4a9c;
+      color: white;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 500;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .file-label:hover {
+      background: #483d7e;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+    .file-name {
+      margin-top: 12px;
+      font-size: 14px;
+      color: #555;
+      background: #f5f5f5;
+      padding: 8px;
+      border-radius: 6px;
+      word-break: break-all;
+    }
+    button {
+      background: #5a4a9c;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      transition: all 0.3s;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      margin-top: 10px;
+    }
+    button:hover {
+      background: #483d7e;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+    button:disabled {
+      background: #c5c5c5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    .tab-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .tab-button {
+      padding: 15px 30px;
+      background: rgba(255, 255, 255, 0.3);
+      border: none;
+      color: white;
+      margin: 0 5px;
+      border-radius: 8px 8px 0 0;
+      font-weight: bold;
+      box-shadow: none;
+      transition: all 0.3s;
+    }
+    .tab-button:hover {
+      transform: translateY(-2px);
+    }
+    .tab-button.active {
+      background: rgba(255, 255, 255, 0.95);
+      color: #5a4a9c;
+    }
+    .progress {
+      margin: 15px 0;
+      display: none;
+    }
+    .image-preview {
+      margin: 20px 0;
+      max-width: 100%;
+      border: 1px solid #ddd;
+      padding: 8px;
+      border-radius: 8px;
+      background: white;
+    }
+    #imageContainer {
+      margin-top: 25px;
+    }
+    #imageContainer canvas {
+      display: block;
+      margin: 20px auto;
+      max-width: 100%;
+      height: auto;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      border: 3px solid white;
+    }
+    .download-btn {
+      margin: 8px;
+      background: #2ea44f;
+    }
+    .download-btn:hover {
+      background: #2a9147;
+    }
+    .status {
+      margin-top: 15px;
+      color: #5a4a9c;
+      font-weight: 500;
+      background: rgba(90, 74, 156, 0.1);
+      padding: 10px;
+      border-radius: 6px;
+    }
+    .page-wrapper {
+      margin-bottom: 30px;
+      background: rgba(255, 255, 255, 0.7);
+      padding: 15px;
+      border-radius: 10px;
+    }
+    @media (max-width: 768px) {
+        .menu-toggle {
+                display: flex;
+            }
+
+            .nav-links {
+                height : 1000px;
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(30,30, 30, 0.95);
+                backdrop-filter: blur(10px);
+                padding: 1rem;
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+        }
+    @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .navbar {
+                padding: 1rem;
+            }
+        }
+  </style>
+</head>
+<body>
+    <nav class="navbar">
+       <a href="index.html" class="logo"><p class="typing">KNZipper</p></a>
+        <div class="menu-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="#">About</a>
+            <a href="Library.html">Library</a>
+            <a href="#">Portfolio</a>
+            <a href="#">Contact</a>
+        </div>
+        </nav>
+  <div class="container">
+    <h1>Image ↔ PDF Converter</h1>
+    
+    <div class="tab-container">
+      <button id="imgToPdfTab" class="tab-button active" onclick="showTab('imageToPdf')">Image to PDF</button>
+      <button id="pdfToImgTab" class="tab-button" onclick="showTab('pdfToImage')">PDF to Image</button>
+    </div>
+    
+    <div class="opinion-box" style="background: rgba(255,255,255,0.8); padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: left;">
+      <h3 style="color: #5a4a9c; margin-top: 0;">අපගේ නිර්දේශය:</h3>
+      <p id="recommendation" style="font-size: 16px;">
+        ඔබ රූප ගණනාවක් එක PDF ගොනුවක් ලෙස සකස් කිරීමට අවශ්‍ය නම්, <strong>Image to PDF</strong> භාවිතා කරන්න. ඔබට PDF එකක් පිටු වශයෙන් වෙන් කිරීමට අවශ්‍ය නම්, <strong>PDF to Image</strong> භාවිතා කරන්න.
+      </p>
+    </div>
+
+    <div id="imageToPdf" class="box">
+      <h2>Image to PDF</h2>
+      <div class="input-group">
+        <label for="imageInput" class="file-label">Select Image(s)</label>
+        <input type="file" id="imageInput" accept="image/*" multiple>
+        <div id="imageFileNames" class="file-name">No files selected</div>
+      </div>
+      <button id="convertToPdfBtn" onclick="convertToPDF()" disabled>Convert to PDF</button>
+      <div id="pdfStatus" class="status"></div>
+    </div>
+
+    <div id="pdfToImage" class="box inactive-box" style="display: none;">
+      <h2>PDF to Image</h2>
+      <div class="input-group">
+        <label for="pdfInput" class="file-label">Select PDF</label>
+        <input type="file" id="pdfInput" accept="application/pdf">
+        <div id="pdfFileName" class="file-name">No file selected</div>
+      </div>
+      <button id="convertToImageBtn" onclick="convertToImage()" disabled>Convert PDF Pages to Images</button>
+      <div id="imageStatus" class="status"></div>
+      <div id="imageContainer"></div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+  <script>
+    // Setup PDF.js worker
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+    
+    // Show tab function
+    function showTab(tabId) {
+      // Hide all boxes and deactivate all tabs
+      document.getElementById('imageToPdf').style.display = 'none';
+      document.getElementById('pdfToImage').style.display = 'none';
+      document.getElementById('imgToPdfTab').classList.remove('active');
+      document.getElementById('pdfToImgTab').classList.remove('active');
+      
+      document.getElementById('imageToPdf').classList.add('inactive-box');
+      document.getElementById('pdfToImage').classList.add('inactive-box');
+      
+      // Show selected tab and activate it
+      if (tabId === 'imageToPdf') {
+        document.getElementById('imageToPdf').style.display = 'block';
+        document.getElementById('imgToPdfTab').classList.add('active');
+        document.getElementById('imageToPdf').classList.remove('inactive-box');
+        
+        // Update recommendation
+        document.getElementById('recommendation').innerHTML = 
+          'ඔබ රූප ගණනාවක් එක PDF ගොනුවක් ලෙස සකස් කිරීමට අවශ්‍ය නම්, <strong>Image to PDF</strong> හොඳම විකල්පයයි. මෙය ඔබට පහසුවෙන් ප්‍රිංට් කිරීමට, හෝ ඊමේල් කිරීමට හොඳම ක්‍රමයයි.';
+      } else {
+        document.getElementById('pdfToImage').style.display = 'block';
+        document.getElementById('pdfToImgTab').classList.add('active');
+        document.getElementById('pdfToImage').classList.remove('inactive-box');
+        
+        // Update recommendation
+        document.getElementById('recommendation').innerHTML = 
+          'ඔබට PDF එකක් පිටු වශයෙන් වෙන් කිරීමට අවශ්‍ය නම්, <strong>PDF to Image</strong> හොඳම විකල්පයයි. මෙය ඔබට PDF පිටු තනි රූප ලෙස සංස්කරණය කිරීමට හෝ බෙදා ගැනීමට හොඳයි.';
+      }
+    }
+    
+    // Add event listeners for file inputs
+    document.getElementById('imageInput').addEventListener('change', function(e) {
+      const fileNames = Array.from(this.files).map(file => file.name).join(', ');
+      document.getElementById('imageFileNames').textContent = fileNames || 'No files selected';
+      document.getElementById('convertToPdfBtn').disabled = this.files.length === 0;
+    });
+    
+    document.getElementById('pdfInput').addEventListener('change', function(e) {
+      document.getElementById('pdfFileName').textContent = this.files[0] ? this.files[0].name : 'No file selected';
+      document.getElementById('convertToImageBtn').disabled = this.files.length === 0;
+      document.getElementById('imageContainer').innerHTML = '';
+    });
+
+    async function convertToPDF() {
+      try {
+        const { jsPDF } = window.jspdf;
+        const input = document.getElementById("imageInput");
+        const statusElement = document.getElementById("pdfStatus");
+        
+        if (input.files.length === 0) {
+          statusElement.textContent = "Please select image(s)";
+          return;
+        }
+
+        statusElement.textContent = "Processing images...";
+        const pdf = new jsPDF();
+        
+        for (let i = 0; i < input.files.length; i++) {
+          statusElement.textContent = `Processing image ${i + 1} of ${input.files.length}...`;
+          const file = input.files[i];
+          
+          try {
+            const img = await fileToImage(file);
+            
+            // Calculate dimensions to fit on PDF page while maintaining aspect ratio
+            const pageWidth = pdf.internal.pageSize.getWidth() - 20; // margins
+            const pageHeight = pdf.internal.pageSize.getHeight() - 20; // margins
+            
+            let imgWidth = pageWidth;
+            let imgHeight = (img.height * pageWidth) / img.width;
+            
+            // If too tall, scale by height instead
+            if (imgHeight > pageHeight) {
+              imgHeight = pageHeight;
+              imgWidth = (img.width * pageHeight) / img.height;
+            }
+            
+            if (i > 0) pdf.addPage();
+            pdf.addImage(img, 'JPEG', 10, 10, imgWidth, imgHeight);
+          } catch (error) {
+            console.error(`Error processing image ${i + 1}:`, error);
+            statusElement.textContent = `Error processing image ${i + 1}: ${error.message}`;
+            return;
+          }
+        }
+
+        pdf.save("converted.pdf");
+        statusElement.textContent = "PDF created successfully!";
+      } catch (error) {
+        console.error("PDF conversion error:", error);
+        document.getElementById("pdfStatus").textContent = "Error creating PDF: " + error.message;
+      }
+    }
+
+    function fileToImage(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = () => reject(new Error("Failed to load image"));
+          img.src = e.target.result;
+        };
+        reader.onerror = () => reject(new Error("Failed to read file"));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function convertToImage() {
+      try {
+        const file = document.getElementById("pdfInput").files[0];
+        const container = document.getElementById("imageContainer");
+        const statusElement = document.getElementById("imageStatus");
+        
+        if (!file) {
+          statusElement.textContent = "Please select a PDF";
+          return;
+        }
+
+        container.innerHTML = "";
+        statusElement.textContent = "Loading PDF...";
+
+        const pdfData = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise;
+        statusElement.textContent = `PDF loaded. Converting ${pdf.numPages} pages...`;
+
+        const downloadAllBtn = document.createElement('button');
+        downloadAllBtn.textContent = 'Download All Images (ZIP)';
+        downloadAllBtn.className = 'download-btn';
+        downloadAllBtn.onclick = () => downloadAllImages();
+        container.appendChild(downloadAllBtn);
+
+        for (let i = 1; i <= pdf.numPages; i++) {
+          statusElement.textContent = `Converting page ${i} of ${pdf.numPages}...`;
+          
+          // Create a wrapper div for each page
+          const pageWrapper = document.createElement('div');
+          pageWrapper.className = 'page-wrapper';
+          
+          // Add page number
+          const pageLabel = document.createElement('div');
+          pageLabel.textContent = `Page ${i}`;
+          pageLabel.style.marginBottom = '5px';
+          pageWrapper.appendChild(pageLabel);
+          
+          // Render page to canvas
+          const page = await pdf.getPage(i);
+          const scale = 1.5;
+          const viewport = page.getViewport({ scale });
+          const canvas = document.createElement("canvas");
+          const context = canvas.getContext("2d");
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          canvas.dataset.pageNum = i;
+          
+          await page.render({
+            canvasContext: context,
+            viewport: viewport
+          }).promise;
+          
+          pageWrapper.appendChild(canvas);
+          
+          // Add download button for this image
+          const downloadBtn = document.createElement('button');
+          downloadBtn.textContent = 'Download Image';
+          downloadBtn.className = 'download-btn';
+          downloadBtn.onclick = () => downloadImage(canvas, i);
+          pageWrapper.appendChild(downloadBtn);
+          
+          container.appendChild(pageWrapper);
+        }
+        
+        statusElement.textContent = `Conversion complete! ${pdf.numPages} pages converted.`;
+      } catch (error) {
+        console.error("Image conversion error:", error);
+        document.getElementById("imageStatus").textContent = "Error converting PDF: " + error.message;
+      }
+    }
+
+    function downloadImage(canvas, pageNum) {
+      const link = document.createElement('a');
+      link.download = `page-${pageNum}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+
+    async function downloadAllImages() {
+      const statusElement = document.getElementById("imageStatus");
+      statusElement.textContent = "Preparing ZIP file...";
+      
+      try {
+        // We would normally use JSZip here, but since we're limited to available libraries,
+        // let's just trigger individual downloads
+        const canvases = document.querySelectorAll('#imageContainer canvas');
+        for (let i = 0; i < canvases.length; i++) {
+          const pageNum = canvases[i].dataset.pageNum;
+          downloadImage(canvases[i], pageNum);
+          // Add a small delay between downloads
+          await new Promise(r => setTimeout(r, 200));
+        }
+        statusElement.textContent = "All images downloaded!";
+      } catch (error) {
+        console.error("Download error:", error);
+        statusElement.textContent = "Error downloading images: " + error.message;
+      }
+    }
+    
+     // Toggle menu for mobile
+        document.querySelector('.menu-toggle').addEventListener('click', function() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+  </script>
+</body>
+</html>
