@@ -1,0 +1,9 @@
+const firebaseConfig = {
+  apiKey: "AIzaSyC4BikecJhstX3Mq1pCTn4o1yX0HP2T58s",
+  authDomain: "androidtest-f89c4.firebaseapp.com",
+  databaseURL: "https://androidtest-f89c4-default-rtdb.firebaseio.com",
+  projectId: "androidtest-f89c4",
+  storageBucket: "androidtest-f89c4.firebasestorage.app",
+  messagingSenderId: "465840129401",
+  appId: "1:465840129401:web:dc227a25193cc28fcc9ba8"
+};
